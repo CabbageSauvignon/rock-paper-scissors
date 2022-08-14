@@ -1,3 +1,5 @@
+
+
 function getComputerChoice() {
     let choiceNumber = Math.floor(Math.random()*3);
     let computerChoice;
@@ -13,52 +15,81 @@ function getComputerChoice() {
     return computerChoice;
 }
 
-function playRound(playerChoice, computerChoice) {
+function playRound(e) {
+    playerChoice = e.target.id;
+    computerChoice = getComputerChoice();
+
+    console.log(playerChoice);
+    console.log(computerChoice);
+    let winner = "";
     if (playerChoice == "rock" && computerChoice == "rock") {
-        return "Tie game.";
+        winner = "tie";
     } else if (playerChoice == "rock" && computerChoice == "paper") {
-        return "Computer Wins...Paper beats Rock";
+        winner = "computer";
     } else if (playerChoice == "rock" && computerChoice == "scissors") {
-        return "You win! Rock beats Scissors.";
+        winner = "player";
     } else if (playerChoice == "paper" && computerChoice == "rock") {
-        return "You win! Paper beats Rock.";
+        winner = "player";
     } else if (playerChoice == "paper" && computerChoice == "paper") {
-        return "Tie game.";
+        winner = "tie";
     } else if (playerChoice == "paper" && computerChoice == "scissors") {
-        return "Computer wins...Scissors beat Paper.";
+        winner = "computer";
     } else if (playerChoice == "scissors" && computerChoice == "rock") {
-        return "Computer wins...Rock beats Scissors.";
+        winner = "computer";
     } else if (playerChoice == "scissors" && computerChoice == "paper") {
-        return "You win! Scissors beats Paper.";
+        winner = "player";
     } else if (playerChoice == "scissors" && computerChoice == "scissors") {
-        return "Tie game.";
+        winner = "tie";
+    }
+    return winner;
+}
+
+function game(e) {
+    //for (let i = 0; i < 5; i++) {
+    let result = playRound(e);
+    let resultString = "";
+    console.log(result);
+    if (result == "player") {
+        resultString = "You win this round!";
+        playerScore++;
+    } 
+    else if (result == "computer") {
+        resultString = "Computer wins this round...";
+        computerScore++;
+    }
+    else {
+        resultString = "Tie!"
+    }
+    
+    console.log(playerScore);
+    console.log(computerScore);
+    const roundHead = document.createElement('h1');
+    roundHead.textContent = `Round ${round}`;
+    const roundResults = document.createElement('p');
+    roundResults.textContent = resultString;
+    const currentScore = document.createElement('p');
+    currentScore.textContent = `Current score: Player ${playerScore}, Computer ${computerScore}`;
+    round++;
+
+    container.appendChild(roundHead);
+    container.appendChild(roundResults);
+    container.appendChild(currentScore);
+    
+    if (playerScore >= 5) {
+        const gameWinner = document.createElement('h2');
+        gameWinner.textContent = "Player wins the game! Well played!";
+        container.appendChild(gameWinner);
+    }
+    else if (computerScore >= 5) {
+        const gameWinner = document.createElement('h2');
+        gameWinner.textContent = "Computer wins the game. Better luck next time.";
+        container.appendChild(gameWinner);
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    for (let i = 0; i < 5; i++) {
-        let playerChoiceRaw = prompt("Choose Rock, Paper, or Scissors");
-        let playerChoice = playerChoiceRaw.toLowerCase();
-        let computerChoice = getComputerChoice();
-        let result = playRound(playerChoice,computerChoice);
-        console.log(i);
-        console.log(result);
-        if (result.charAt(0) == "Y") {
-            playerScore++;
-        } 
-        else if (result.charAt(0) == "C") {
-            computerScore++;
-        }
-    }
-    if (playerScore > computerScore) {
-        return "You Won!"
-    }
-    else if (computerScore > playerScore) {
-        return "You lose! Better luck next time."
-    }
-}
-
-let result = game();
-console.log(result);
+const buttons = document.querySelectorAll('button');
+const container = document.querySelector('#container');
+let round = 1;
+let playerScore = 0;
+let computerScore = 0;
+buttons.forEach(button => button.addEventListener('click', game));
